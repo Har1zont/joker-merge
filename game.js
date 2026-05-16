@@ -1,5 +1,5 @@
 // Joker Merge - Pixel Art Merge Game with Jokers
-// Enhanced version with better mechanics, sound and menu prep
+// Fully responsive version for mobile
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -13,13 +13,22 @@ let isGameOver = false;
 let gameStarted = false;
 
 const GRID_SIZE = 6;
-const CELL_SIZE = 80;
-const PADDING = 10;
-canvas.width = GRID_SIZE * (CELL_SIZE + PADDING) + PADDING;
-canvas.height = canvas.width;
+let CELL_SIZE = 75;
+let PADDING = 8;
 
 let colors = ['#ff4757', '#ffa502', '#2ed573', '#1e90ff', '#3742fa', '#a55eea'];
 let audioCtx;
+
+function resizeCanvas() {
+  const containerWidth = Math.min(window.innerWidth * 0.92, 520);
+  const totalSize = containerWidth;
+  CELL_SIZE = Math.floor((totalSize - (GRID_SIZE + 1) * PADDING) / GRID_SIZE);
+  
+  canvas.width = GRID_SIZE * CELL_SIZE + (GRID_SIZE + 1) * PADDING;
+  canvas.height = canvas.width;
+  
+  // CSS size is already handled
+}
 
 function initAudio() {
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -91,13 +100,13 @@ function drawGrid() {
       if (val > 0) {
         const isJoker = val === 1;
         ctx.fillStyle = isJoker ? '#f1f1f1' : colors[Math.min(Math.floor(Math.log2(val))-1, colors.length-1)];
-        ctx.fillRect(x+6, y+6, CELL_SIZE-12, CELL_SIZE-12);
+        ctx.fillRect(x+4, y+4, CELL_SIZE-8, CELL_SIZE-8);
         
         ctx.fillStyle = isJoker ? '#111' : '#fff';
-        ctx.font = isJoker ? 'bold 32px Courier New' : 'bold 36px Courier New';
+        ctx.font = isJoker ? `bold ${Math.floor(CELL_SIZE*0.45)}px Courier New` : `bold ${Math.floor(CELL_SIZE*0.5)}px Courier New`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(isJoker ? '★' : val.toString(), x + CELL_SIZE/2, y + CELL_SIZE/2 + 4);
+        ctx.fillText(isJoker ? '★' : val.toString(), x + CELL_SIZE/2, y + CELL_SIZE/2 + 3);
       }
     }
   }
@@ -123,7 +132,6 @@ function slide(row) {
 function move(direction) {
   if (isGameOver || !gameStarted) return;
   let moved = false;
-  let oldGrid = grid.map(row => [...row]);
 
   if (direction === 'left') {
     for (let r = 0; r < GRID_SIZE; r++) {
@@ -205,8 +213,17 @@ function startNewGame() {
   drawGrid();
 }
 
+// Resize handler
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  drawGrid();
+});
+
 // Event listeners
-newGameBtn.addEventListener('click', startNewGame);
+newGameBtn.addEventListener('click', () => {
+  resizeCanvas();
+  startNewGame();
+});
 
 // Touch swipe
 let startX, startY;
@@ -242,8 +259,9 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Start the game
+// Initial setup
+resizeCanvas();
 startNewGame();
 drawGrid();
 
-console.log('%c🎮 Joker Merge v0.2 loaded! Use arrows or swipe. Jokers = chaos!', 'color:#ffcc00;font-family:monospace');
+console.log('%c🎮 Joker Merge v0.3 - Fully Responsive!', 'color:#ffcc00;font-family:monospace');
