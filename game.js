@@ -1,5 +1,5 @@
 // Joker Merge - Pixel Art Merge Game with Jokers
-// Fully responsive version for mobile
+// 5x5 version for better mobile fit
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -12,22 +12,20 @@ let highscore = parseInt(localStorage.getItem('jokerMergeHigh') || '0');
 let isGameOver = false;
 let gameStarted = false;
 
-const GRID_SIZE = 6;
-let CELL_SIZE = 75;
-let PADDING = 8;
+const GRID_SIZE = 5;
+let CELL_SIZE = 80;
+let PADDING = 10;
 
 let colors = ['#ff4757', '#ffa502', '#2ed573', '#1e90ff', '#3742fa', '#a55eea'];
 let audioCtx;
 
 function resizeCanvas() {
-  const containerWidth = Math.min(window.innerWidth * 0.92, 520);
+  const containerWidth = Math.min(window.innerWidth * 0.92, 480);
   const totalSize = containerWidth;
   CELL_SIZE = Math.floor((totalSize - (GRID_SIZE + 1) * PADDING) / GRID_SIZE);
   
   canvas.width = GRID_SIZE * CELL_SIZE + (GRID_SIZE + 1) * PADDING;
   canvas.height = canvas.width;
-  
-  // CSS size is already handled
 }
 
 function initAudio() {
@@ -264,4 +262,4 @@ resizeCanvas();
 startNewGame();
 drawGrid();
 
-console.log('%c🎮 Joker Merge v0.3 - Fully Responsive!', 'color:#ffcc00;font-family:monospace');
+console.log('%c🎮 Joker Merge v0.4 - 5x5 Mobile Optimized!', 'color:#ffcc00;font-family:monospace');
